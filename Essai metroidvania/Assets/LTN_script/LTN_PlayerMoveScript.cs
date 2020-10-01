@@ -36,29 +36,17 @@ public class LTN_PlayerMoveScript : MonoBehaviour
 
     void Update()
     {
-        //check si on peut sauter
-        if(isGrounded == true)
-        {
-            jumpNumber = jumpNumberValue;
-        }
-
 
         //saut joueur
-        if(Input.GetKeyDown(KeyCode.Space) && jumpNumber > 0)
+        if(Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
         {
             rb.velocity = Vector2.up * jumpForce;
-            jumpNumber--;
-        }
-        else if(Input.GetKeyDown(KeyCode.Space) && jumpNumber == 0 && isGrounded == true)
-        {
-            rb.velocity = Vector2.up * jumpForce;
-
         }
     }
 
     void FixedUpdate()
     {
-        //check si player touche le sol
+        //check si player touche le sol pour sauter
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
 
         //bouger le joueur
