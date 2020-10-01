@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.Design.Serialization;
+using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
 
@@ -8,34 +10,80 @@ public class LTN_PlayerMoveScript : MonoBehaviour
 {
     [SerializeField]
     private float moveSpeed;
+    [SerializeField]
+    private float jumpForce;
+    private float moveInput;
+    [SerializeField]
+    private bool facingRight = true;
+
+    private bool isGrounded;
+    public Transform groundCheck;
+    public float checkRadius;
+    public LayerMask whatIsGround;
 
     public Rigidbody2D rb;
-    public Collider2D jumpVerify;
     [SerializeField]
-    bool jump = false;
-
-    Vector2 movement;
+    private int jumpNumber;
+    public int jumpNumberValue;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        //permet de récupérer le rigidbody pour s'en servir plus loin
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-
-        if (Input.GetButtonDown("Jump"))
+        //check si on peut sauter
+        if(isGrounded == true)
         {
-            jump = true;
+            jumpNumber = jumpNumberValue;
+        }
+
+
+        //saut joueur
+        if(Input.GetKeyDown(KeyCode.Space) && jumpNumber > 0)
+        {
+            rb.velocity = Vector2.up * jumpForce;
+            jumpNumber--;
+        }
+        else if(Input.GetKeyDown(KeyCode.Space) && jumpNumber == 0 && isGrounded == true)
+        {
+            rb.velocity = Vector2.up * jumpForce;
+
         }
     }
 
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+        //check si player touche le sol
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
+
+        //bouger le joueur
+        moveInput = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
+        //flip le sprite selon la direction ou le joueur va
+        if(facingRight == false && moveInput > 0)
+        {
+            Flip();
+        }
+        else if(facingRight == true && moveInput < 0)
+        {
+            Flip();
+        }
     }
 
+    //fonction de flip
+    void Flip()
+    {
+       
+        facingRight = !facingRight;
+        Vector3 Scaler = transform.localScale;
+        Scaler.x *= -1;
+        transform.localScale = Scaler;
+
+    }
 }
