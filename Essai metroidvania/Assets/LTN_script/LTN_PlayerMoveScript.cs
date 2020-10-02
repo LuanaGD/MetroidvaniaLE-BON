@@ -15,6 +15,8 @@ public class LTN_PlayerMoveScript : MonoBehaviour
     private float moveInput;
     [SerializeField]
     private bool facingRight = true;
+    [SerializeField]
+    private float dashDistance;
 
     private bool isGrounded;
     public Transform groundCheck;
@@ -22,9 +24,6 @@ public class LTN_PlayerMoveScript : MonoBehaviour
     public LayerMask whatIsGround;
 
     public Rigidbody2D rb;
-    [SerializeField]
-    private int jumpNumber;
-    public int jumpNumberValue;
 
 
     // Start is called before the first frame update
