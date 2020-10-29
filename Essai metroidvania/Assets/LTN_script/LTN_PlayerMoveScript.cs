@@ -18,6 +18,8 @@ public class LTN_PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private float dashDistance;
 
+    [SerializeField]
+    private bool isDashing = false;
     private bool isGrounded;
     public Transform groundCheck;
     public float checkRadius;
@@ -41,10 +43,29 @@ public class LTN_PlayerMoveScript : MonoBehaviour
         {
             rb.velocity = Vector2.up * jumpForce;
         }
+
+        //dash joueur
+        if(Input.GetKeyDown(KeyCode.LeftShift) && isDashing == false)
+        {
+
+            if (facingRight == false)
+            {
+                isDashing = true;
+                rb.velocity = Vector2.left * dashDistance;
+            }
+            else if (facingRight == true)
+            {
+                isDashing = true;
+                rb.velocity = Vector2.right * dashDistance;
+            }
+
+            isDashing = false;
+        }
     }
 
     void FixedUpdate()
     {
+
         //check si player touche le sol pour sauter
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
 
